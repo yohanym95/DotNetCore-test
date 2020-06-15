@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\coreTest3",
+    "\\coreTest3\\Migrations",
+    "\\coreTest3\\Models",
+    "\\coreTest3\\obj\\Debug\\netcoreapp3.1\\staticwebassets",
+    "\\coreTest3\\obj\\Release\\netcoreapp3.1"
+  ],
+  "SelectedNode": "\\coreTest3\\Models\\StudentContext.cs",
+  "PreviewInSolutionExplorer": true
+}
