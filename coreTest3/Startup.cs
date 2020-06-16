@@ -30,7 +30,7 @@ namespace coreTest3
         {
             services.AddControllers();
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<StudentContext>(opt => opt.UseSqlServer(connectionString));
+            services.AddDbContext<MainContext>(opt => opt.UseSqlServer(connectionString));
 
             services.AddSwaggerGen(c =>
             {

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using coreTest3.Models;
+using coreTest3.Models.response;
 using Microsoft.AspNetCore.Mvc;
 
 namespace coreTest3.Controllers
@@ -12,35 +11,41 @@ namespace coreTest3.Controllers
     [ApiController]
     public class StudentController : Controller
     {
-        private StudentContext _studentContext;
+        private MainContext _mainContext;
+        private Response response;
 
-        public StudentController(StudentContext context)
+        public StudentController(MainContext context)
         {
-            _studentContext = context;
+            _mainContext = context;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Student>> Get()
         {
-            return Ok(_studentContext.Students.ToList());
+            response = new Response(true, null, _mainContext.Students.ToList());
+            return Ok(response);
         }
 
         [HttpGet]
         [Route("id/{id}")]
         public ActionResult<Student> GetById( int? id) 
         {
+
             if(id <= 0)
             {
-                return NotFound("Student id must be higher than zero");
+                response = new Response(false, "Student id must be higher than zero", null);
+                return NotFound(response);
             }
-            Student student = _studentContext.Students.FirstOrDefault(s => s.StudentId == id);
+            Student student = _mainContext.Students.FirstOrDefault(s => s.StudentId == id);
 
             if (student == null)
             {
-                return NotFound("Student not found");
+                response = new Response(false, "Student not found",null);
+                return NotFound(response);
             }
 
-            return Ok(student);
+            response = new Response(true, null, student);
+            return Ok(response);
 
         }
 
@@ -49,17 +54,20 @@ namespace coreTest3.Controllers
         {
             if (student == null)
             {
-                return NotFound("Student data is not supplied");
+                response = new Response(false, "Student data is not supplied", null);
+                return NotFound(response);
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                response = new Response(false, "Error message", ModelState);
+                return BadRequest(response);
             }
 
-            await _studentContext.Students.AddAsync(student);
-            await _studentContext.SaveChangesAsync();
-            return Ok(student);
+            await _mainContext.Students.AddAsync(student);
+            await _mainContext.SaveChangesAsync();
+            response = new Response(true, "Add the student Successfully", student);
+            return Ok(response);
         }
 
         [HttpPut]
@@ -67,19 +75,22 @@ namespace coreTest3.Controllers
         {
             if(student == null)
             {
-                return NotFound("Student data is not supplied");
+                response = new Response(false, "Student data is not supplied", null);
+                return NotFound(response);
             }
 
             if (!ModelState.IsValid)
             {
+                response = new Response(true, "Error Message", ModelState);
                 return BadRequest(ModelState);
             }
 
-            Student existingStudent = _studentContext.Students.FirstOrDefault(s => s.StudentId == student.StudentId);
+            Student existingStudent = _mainContext.Students.FirstOrDefault(s => s.StudentId == student.StudentId);
 
             if (existingStudent == null)
             {
-                return NotFound("Student does not exist in the database");
+                response = new Response(false, "Student does not exist in the database", null);
+                return NotFound(response);
             }
 
             existingStudent.FirstName = student.FirstName;
@@ -87,9 +98,10 @@ namespace coreTest3.Controllers
             existingStudent.State = student.State;
             existingStudent.City = student.City;
 
-            _studentContext.Attach(existingStudent).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            await _studentContext.SaveChangesAsync();
-            return Ok(existingStudent);
+            _mainContext.Attach(existingStudent).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            await _mainContext.SaveChangesAsync();
+            response = new Response(true, "Update the student Successfully", existingStudent);
+            return Ok(response);
 
         }
 
@@ -98,25 +110,28 @@ namespace coreTest3.Controllers
         {
             if(id == null)
             {
-                return NotFound("Id is not supplied");
+                response = new Response(false, "Id is not supplied", null);
+                return NotFound(response);
             }
 
-            Student student = _studentContext.Students.FirstOrDefault(s => s.StudentId == id);
+            Student student = _mainContext.Students.FirstOrDefault(s => s.StudentId == id);
 
             if(student == null)
             {
-                return NotFound("Student is not found with particular id supplied");
+                response = new Response(false, "Student is not found with particular id supplied", null);
+                return NotFound(response);
             }
-            _studentContext.Students.Remove(student);
-            await _studentContext.SaveChangesAsync();
-            return Ok("Student is deleted successfully");
+            _mainContext.Students.Remove(student);
+            await _mainContext.SaveChangesAsync();
+            response = new Response(true, "Student is deleted successfully", null);
+            return Ok(response);
         }
 
 
 
         ~StudentController()
         {
-            _studentContext.Dispose();
+            _mainContext.Dispose();
         }
     }
 }

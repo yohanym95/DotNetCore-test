@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using coreTest3.Models;
@@ -11,18 +10,18 @@ namespace coreTest3.Controllers
     [ApiController]
     public class CourseController : Controller
     {
-        private StudentContext _studentContext;
+        private MainContext _mainContext;
 
-        public CourseController(StudentContext context)
+        public CourseController(MainContext context)
         {
-            _studentContext = context;
+            _mainContext = context;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Course>> Get()
         {
 
-            return Ok(_studentContext.Courses.ToList());
+            return Ok(_mainContext.Courses.ToList());
         }
 
         [HttpPost]
@@ -39,9 +38,45 @@ namespace coreTest3.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _studentContext.Courses.AddAsync(course);
-            await _studentContext.SaveChangesAsync();
+            await _mainContext.Courses.AddAsync(course);
+            await _mainContext.SaveChangesAsync();
             return Ok(course);
+        }
+
+        //[HttpPut]
+        //public async Task<ActionResult> Update([FromBody] Course course)
+        //{
+        //    if (course == null)
+        //    {
+        //        return NotFound("Course data is not supplied");
+        //    }
+
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    //Student existingStudent = _mainContext.Courses.FirstOrDefault(s => s == student.StudentId);
+
+        //    //if (existingStudent == null)
+        //    //{
+        //    //    return NotFound("Student does not exist in the database");
+        //    //}
+
+        //    //existingStudent.FirstName = student.FirstName;
+        //    //existingStudent.LastName = student.LastName;
+        //    //existingStudent.State = student.State;
+        //    //existingStudent.City = student.City;
+
+        //    //_mainContext.Attach(existingStudent).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        //    //await _mainContext.SaveChangesAsync();
+        //    //return Ok(existingStudent);
+
+        //}
+
+        ~CourseController()
+        {
+            _mainContext.Dispose();
         }
 
     }
