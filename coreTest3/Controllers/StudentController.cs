@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace coreTest3.Controllers
 {
-    [Route("api/student")]
+    [Route("api")]
     [ApiController]
     public class StudentController : Controller
     {
@@ -20,6 +20,7 @@ namespace coreTest3.Controllers
         }
 
         [HttpGet]
+        [Route("students")]
         public ActionResult<IEnumerable<Student>> Get()
         {
             response = new Response(true, null, _mainContext.Students.ToList());
@@ -27,10 +28,10 @@ namespace coreTest3.Controllers
         }
 
         [HttpGet]
-        [Route("id/{id}")]
-        public ActionResult<Student> GetById( int? id) 
+        [Route("student/id/{id}")]
+        public ActionResult<Student> GetById(int? id)
         {
-            if(id <= 0)
+            if (id <= 0)
             {
                 response = new Response(false, "Student id must be higher than zero", null);
                 return NotFound(response);
@@ -39,7 +40,7 @@ namespace coreTest3.Controllers
 
             if (student == null)
             {
-                response = new Response(false, "Student not found",null);
+                response = new Response(false, "Student not found", null);
                 return NotFound(response);
             }
             response = new Response(true, null, student);
@@ -47,7 +48,8 @@ namespace coreTest3.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody]Student student)
+        [Route("student")]
+        public async Task<ActionResult> Post([FromBody] Student student)
         {
             if (student == null)
             {
@@ -66,9 +68,10 @@ namespace coreTest3.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Update([FromBody]Student student)
+        [Route("student")]
+        public async Task<ActionResult> Update([FromBody] Student student)
         {
-            if(student == null)
+            if (student == null)
             {
                 response = new Response(false, "Student data is not supplied", null);
                 return NotFound(response);
@@ -100,10 +103,11 @@ namespace coreTest3.Controllers
 
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete()]
+        [Route("student/{id}")]
         public async Task<ActionResult> Delete(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 response = new Response(false, "Id is not supplied", null);
                 return NotFound(response);
@@ -111,7 +115,7 @@ namespace coreTest3.Controllers
 
             Student student = _mainContext.Students.FirstOrDefault(s => s.StudentId == id);
 
-            if(student == null)
+            if (student == null)
             {
                 response = new Response(false, "Student is not found with particular id supplied", null);
                 return NotFound(response);
