@@ -30,7 +30,6 @@ namespace coreTest3.Controllers
         [Route("id/{id}")]
         public ActionResult<Student> GetById( int? id) 
         {
-
             if(id <= 0)
             {
                 response = new Response(false, "Student id must be higher than zero", null);
@@ -43,7 +42,6 @@ namespace coreTest3.Controllers
                 response = new Response(false, "Student not found",null);
                 return NotFound(response);
             }
-
             response = new Response(true, null, student);
             return Ok(response);
         }
@@ -56,13 +54,11 @@ namespace coreTest3.Controllers
                 response = new Response(false, "Student data is not supplied", null);
                 return NotFound(response);
             }
-
             if (!ModelState.IsValid)
             {
                 response = new Response(false, "Error message", ModelState);
                 return BadRequest(response);
             }
-
             await _mainContext.Students.AddAsync(student);
             await _mainContext.SaveChangesAsync();
             response = new Response(true, "Add the student Successfully", student);
@@ -77,7 +73,6 @@ namespace coreTest3.Controllers
                 response = new Response(false, "Student data is not supplied", null);
                 return NotFound(response);
             }
-
             if (!ModelState.IsValid)
             {
                 response = new Response(false, "Error Message", ModelState);
@@ -126,8 +121,6 @@ namespace coreTest3.Controllers
             response = new Response(true, "Student is deleted successfully", null);
             return Ok(response);
         }
-
-
 
         ~StudentController()
         {
