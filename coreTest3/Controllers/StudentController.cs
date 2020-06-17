@@ -46,7 +46,6 @@ namespace coreTest3.Controllers
 
             response = new Response(true, null, student);
             return Ok(response);
-
         }
 
         [HttpPost]
@@ -81,7 +80,7 @@ namespace coreTest3.Controllers
 
             if (!ModelState.IsValid)
             {
-                response = new Response(true, "Error Message", ModelState);
+                response = new Response(false, "Error Message", ModelState);
                 return BadRequest(ModelState);
             }
 
@@ -95,8 +94,9 @@ namespace coreTest3.Controllers
 
             existingStudent.FirstName = student.FirstName;
             existingStudent.LastName = student.LastName;
-            existingStudent.State = student.State;
+            existingStudent.MobileNumber = student.MobileNumber;
             existingStudent.City = student.City;
+            existingStudent.Email = student.Email;
 
             _mainContext.Attach(existingStudent).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             await _mainContext.SaveChangesAsync();

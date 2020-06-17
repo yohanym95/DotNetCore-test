@@ -17,7 +17,11 @@ namespace coreTest3.Models
         [Required]
         public string City { get; set; }
         [Required]
-        public string State { get; set; }
+        [StringLength(10)]
+        public string MobileNumber { get; set; }
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
 
 
     }

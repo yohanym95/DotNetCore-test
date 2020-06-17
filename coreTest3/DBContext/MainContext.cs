@@ -8,14 +8,7 @@ namespace coreTest3.Models
 
         public MainContext(DbContextOptions options) : base(options)
         {
-
-
         }
-
         public DbSet<Student> Students { get; set; }
-        public DbSet<Course> Courses { get; set; }
-
-
-
     }
 }
